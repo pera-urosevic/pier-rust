@@ -5,6 +5,7 @@ use std::num::ParseFloatError;
 
 use crate::database::DB;
 use crate::email;
+use crate::monitor::alert::alert;
 
 use systemstat::Platform;
 
@@ -23,11 +24,16 @@ pub fn task() {
         if filter_regex.is_match(&drive.fs_mounted_on) {
             let free = error_email!(value(drive.free.to_string()));
             let total = error_email!(value(drive.total.to_string()));
-            let usage = 100 - (free / total * 100.0).round() as u64;
+            let usage = 100.0 - (free / total * 100.0);
             let key = drive.fs_mounted_on;
             // println!("[storage] {} {}", key, usage);
+            alert(
+                1,
+                usage > 90.0,
+                "storage usage",
+                format!("{} {}%", key, usage).as_str(),
+            );
             db = db.hset("pier:storage", key, usage);
         }
     }
-    println!("done");
 }

@@ -32,4 +32,50 @@ impl DB {
         error_email!(self.con.hset(key, field, value));
         self
     }
+
+    pub fn counter(mut self, inc: bool, threshold: i32, key: &str, field: &str) -> bool {
+        let mut counted = false;
+        let mut value: i32 = match self.con.hget(key, field) {
+            Ok(v) => v,
+            Err(_) => 0,
+        };
+        if inc {
+            value = value + 1;
+        } else {
+            value = 0;
+        }
+        // println!("inc {:#?}, value {:#?}", inc, value);
+        if value >= threshold {
+            counted = true;
+            value = 0;
+        }
+        error_email!(self.con.hset(key, field, value));
+        return counted;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_counter() {
+        // counter set to 1
+        let counted = DB::new().counter(true, 2, "test", "temp");
+        assert_eq!(counted, false);
+        // counter still 1
+        let counted = DB::new().counter(false, 2, "test", "temp");
+        assert_eq!(counted, false);
+        // counter hits threshold
+        let counted = DB::new().counter(true, 2, "test", "temp");
+        assert_eq!(counted, true);
+        // counter hits 1
+        let counted = DB::new().counter(true, 2, "test", "temp");
+        assert_eq!(counted, false);
+        // counter hits threshold
+        let counted = DB::new().counter(true, 2, "test", "temp");
+        assert_eq!(counted, true);
+        // cleanup
+        DB::new().del("test");
+    }
 }
