@@ -19,7 +19,7 @@ pub fn task() {
     let filter_regex: Regex = Regex::new(storage_filter.as_str()).expect("Storage RegExp valid");
     let sys = systemstat::System::new();
     let drives = error_email!(sys.mounts());
-    let mut db = DB::new().del("pier:storage");
+    let mut db = DB::new().del("monitor:storage");
     for drive in drives {
         if filter_regex.is_match(&drive.fs_mounted_on) {
             let free = error_email!(value(drive.free.to_string()));
@@ -27,13 +27,8 @@ pub fn task() {
             let usage = 100.0 - (free / total * 100.0);
             let key = drive.fs_mounted_on;
             // println!("[storage] {} {}", key, usage);
-            alert(
-                1,
-                usage > 90.0,
-                "storage usage",
-                format!("{} {}%", key, usage).as_str(),
-            );
-            db = db.hset("pier:storage", key, usage);
+            alert(1, usage > 90.0, "storage usage", format!("{} {}%", key, usage).as_str());
+            db = db.hset("monitor:storage", key, usage);
         }
     }
 }

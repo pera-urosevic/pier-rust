@@ -1,6 +1,6 @@
 [package]
 name = "pier"
-version = "1.0.0"
+version = "1.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -12,3 +12,4 @@ clokwerk = "0.3.5"
 systemstat = "0.2.1"
 sendgrid = { version = "0.18.1", features = ["blocking"] }
 redis = { version = "0.22.1", features = ["tokio-comp"] }
+reqwest = "0.11.14"

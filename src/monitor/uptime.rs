@@ -16,7 +16,7 @@ pub fn task() {
     let hours = (seconds - days * SEC_DAY) / SEC_HOUR;
     // println!("[uptime] {}d {}h", days, hours);
     DB::new()
-        .del("pier:uptime")
-        .hset("pier:uptime", "days", days)
-        .hset("pier:uptime", "hours", hours);
+        .del("monitor:uptime")
+        .hset("monitor:uptime", "days", days)
+        .hset("monitor:uptime", "hours", hours);
 }

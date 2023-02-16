@@ -23,12 +23,7 @@ impl DB {
         self
     }
 
-    pub fn hset<K: ToRedisArgs, F: ToRedisArgs, V: ToRedisArgs>(
-        mut self,
-        key: K,
-        field: F,
-        value: V,
-    ) -> Self {
+    pub fn hset<K: ToRedisArgs, F: ToRedisArgs, V: ToRedisArgs>(mut self, key: K, field: F, value: V) -> Self {
         error_email!(self.con.hset(key, field, value));
         self
     }
@@ -60,19 +55,22 @@ mod tests {
 
     #[test]
     fn test_counter() {
-        // counter set to 1
+        // counter will increase to 1
         let counted = DB::new().counter(true, 2, "test", "temp");
         assert_eq!(counted, false);
-        // counter still 1
+        // counter will reset to 0
         let counted = DB::new().counter(false, 2, "test", "temp");
         assert_eq!(counted, false);
-        // counter hits threshold
-        let counted = DB::new().counter(true, 2, "test", "temp");
-        assert_eq!(counted, true);
-        // counter hits 1
+        // counter will increase to 1
         let counted = DB::new().counter(true, 2, "test", "temp");
         assert_eq!(counted, false);
-        // counter hits threshold
+        // counter will hit threshold and reset to 0
+        let counted = DB::new().counter(true, 2, "test", "temp");
+        assert_eq!(counted, true);
+        // counter will increase to 1
+        let counted = DB::new().counter(true, 2, "test", "temp");
+        assert_eq!(counted, false);
+        // counter will hit threshold and reset to 0
         let counted = DB::new().counter(true, 2, "test", "temp");
         assert_eq!(counted, true);
         // cleanup

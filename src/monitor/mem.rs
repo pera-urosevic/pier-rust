@@ -15,5 +15,5 @@ pub fn task() {
     let usage = 100.0 - ((free / total) * 100.0);
     // println!("[mem] {}", usage);
     alert(2, usage > 90.0, "mem usage", format!("{}%", usage).as_str());
-    DB::new().del("pier:mem").hset("pier:mem", "usage", usage);
+    DB::new().del("monitor:mem").hset("monitor:mem", "usage", usage);
 }

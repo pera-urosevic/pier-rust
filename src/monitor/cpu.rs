@@ -14,7 +14,7 @@ fn temp() {
         Ok(temp) => {
             // println!("[cpu] temp {}", temp);
             alert(1, temp > 70.0, "cpu temp", format!("{}°C", temp).as_str());
-            DB::new().hset("pier:cpu", "temp", temp);
+            DB::new().hset("monitor:cpu", "temp", temp);
         }
         Err(error) => {
             println!("[cpu] temp {}", error);
@@ -32,7 +32,7 @@ fn usage() {
                     let usage = (cpu.user + cpu.nice + cpu.system + cpu.interrupt) * 100.0;
                     // println!("[cpu] usage {}", usage);
                     alert(3, usage > 90.0, "cpu usage", format!("{}%", usage).as_str());
-                    DB::new().hset("pier:cpu", "usage", usage);
+                    DB::new().hset("monitor:cpu", "usage", usage);
                 }
                 Err(error) => println!("[cpu] usage {}", error),
             };
@@ -42,7 +42,7 @@ fn usage() {
 }
 
 pub fn task() {
-    DB::new().del("pier:cpu");
+    DB::new().del("monitor:cpu");
     temp();
     usage();
 }

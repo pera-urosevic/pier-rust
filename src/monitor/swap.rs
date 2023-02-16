@@ -12,5 +12,5 @@ pub fn task() {
     let total = swap.total.as_u64() as f64;
     let usage = 100 - ((free / total) * 100.0).round() as u64;
     // println!("[swap] {}", usage);
-    DB::new().del("pier:swap").hset("pier:swap", "usage", usage);
+    DB::new().del("monitor:swap").hset("monitor:swap", "usage", usage);
 }

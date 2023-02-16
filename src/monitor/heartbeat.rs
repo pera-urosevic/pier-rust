@@ -6,12 +6,10 @@ use crate::database::DB;
 
 pub fn task() {
     let time = SystemTime::now();
-    let ts = time
-        .duration_since(UNIX_EPOCH)
-        .expect("Time travel not possible");
+    let ts = time.duration_since(UNIX_EPOCH).expect("Time travel not possible");
     let timestamp = format!("{}", ts.as_millis());
     // println!("[heartbeat] {}", timestamp);
     DB::new()
-        .del("pier:heartbeat")
-        .hset("pier:heartbeat", "timestamp", timestamp);
+        .del("monitor:heartbeat")
+        .hset("monitor:heartbeat", "timestamp", timestamp);
 }
